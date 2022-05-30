@@ -1,6 +1,6 @@
 {
   "name": "notion-client-for-browser",
-  "version": "6.12.11",
+  "version": "6.12.12",
   "type": "module",
   "description": "Robust TypeScript client for the unofficial Notion API. Browsified. But because the Notion server doesn't allow CORS, You can only use it for an extension",
   "repository": "MagnusLim/react-notion-x",
