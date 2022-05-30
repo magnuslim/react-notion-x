@@ -1,5 +1,5 @@
 import ky from 'ky-universal'
-import pMap from 'p-map'
+import pMap from 'p-map-browser'
 
 import {
   parsePageId,
