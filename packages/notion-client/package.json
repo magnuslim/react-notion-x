@@ -1,10 +1,10 @@
 {
-  "name": "notion-client",
+  "name": "notion-client-for-browser",
   "version": "6.12.9",
   "type": "module",
-  "description": "Robust TypeScript client for the unofficial Notion API.",
-  "repository": "NotionX/react-notion-x",
-  "author": "Travis Fischer <travis@transitivebullsh.it>",
+  "description": "Robust TypeScript client for the unofficial Notion API. Browsified. But because the Notion server doesn't allow CORS, You can only use it for an extension",
+  "repository": "MagnusLim/react-notion-x",
+  "author": "Magnus Lim",
   "license": "MIT",
   "main": "./build/index.js",
   "module": "./build/index.js",
@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "got": "^11.8.1",
+    "ky": "^0.30.0",
+    "ky-universal": "^0.10.1",
     "notion-types": "^6.12.6",
     "notion-utils": "^6.12.9",
     "p-map": "^5.3.0"

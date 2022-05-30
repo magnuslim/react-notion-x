@@ -1,5 +1,4 @@
-// import { promises as fs } from 'fs'
-import got, { OptionsOfJSONResponseBody } from 'got'
+import ky from 'ky-universal'
 import pMap from 'p-map'
 
 import {
@@ -47,8 +46,7 @@ export class NotionAPI {
       fetchCollections = true,
       signFileUrls = true,
       chunkLimit = 100,
-      chunkNumber = 0,
-      gotOptions
+      chunkNumber = 0
     }: {
       concurrency?: number
       fetchMissingBlocks?: boolean
@@ -56,13 +54,11 @@ export class NotionAPI {
       signFileUrls?: boolean
       chunkLimit?: number
       chunkNumber?: number
-      gotOptions?: OptionsOfJSONResponseBody
     } = {}
   ): Promise<notion.ExtendedRecordMap> {
     const page = await this.getPageRaw(pageId, {
       chunkLimit,
-      chunkNumber,
-      gotOptions
+      chunkNumber
     })
     const recordMap = page?.recordMap as notion.ExtendedRecordMap
 
@@ -92,10 +88,9 @@ export class NotionAPI {
           break
         }
 
-        const newBlocks = await this.getBlocks(
-          pendingBlockIds,
-          gotOptions
-        ).then((res) => res.recordMap.block)
+        const newBlocks = await this.getBlocks(pendingBlockIds).then(
+          (res) => res.recordMap.block
+        )
 
         recordMap.block = { ...recordMap.block, ...newBlocks }
       }
@@ -142,10 +137,7 @@ export class NotionAPI {
             const collectionData = await this.getCollectionData(
               collectionId,
               collectionViewId,
-              collectionView,
-              {
-                gotOptions
-              }
+              collectionView
             )
 
             // await fs.writeFile(
@@ -195,7 +187,7 @@ export class NotionAPI {
     // because it is preferable for many use cases as opposed to making these API calls
     // lazily from the client-side.
     if (signFileUrls) {
-      await this.addSignedUrls({ recordMap, contentBlockIds, gotOptions })
+      await this.addSignedUrls({ recordMap, contentBlockIds })
     }
 
     return recordMap
@@ -203,12 +195,10 @@ export class NotionAPI {
 
   public async addSignedUrls({
     recordMap,
-    contentBlockIds,
-    gotOptions = {}
+    contentBlockIds
   }: {
     recordMap: notion.ExtendedRecordMap
     contentBlockIds?: string[]
-    gotOptions?: OptionsOfJSONResponseBody
   }) {
     recordMap.signed_urls = {}
 
@@ -254,10 +244,7 @@ export class NotionAPI {
 
     if (allFileInstances.length > 0) {
       try {
-        const { signedUrls } = await this.getSignedFileUrls(
-          allFileInstances,
-          gotOptions
-        )
+        const { signedUrls } = await this.getSignedFileUrls(allFileInstances)
 
         if (signedUrls.length === allFileInstances.length) {
           for (let i = 0; i < allFileInstances.length; ++i) {
@@ -276,13 +263,11 @@ export class NotionAPI {
   public async getPageRaw(
     pageId: string,
     {
-      gotOptions,
       chunkLimit = 100,
       chunkNumber = 0
     }: {
       chunkLimit?: number
       chunkNumber?: number
-      gotOptions?: OptionsOfJSONResponseBody
     } = {}
   ) {
     const parsedPageId = parsePageId(pageId)
@@ -301,8 +286,7 @@ export class NotionAPI {
 
     return this.fetch<notion.PageChunk>({
       endpoint: 'loadPageChunk',
-      body,
-      gotOptions
+      body
     })
   }
 
@@ -314,8 +298,7 @@ export class NotionAPI {
       limit = 9999,
       searchQuery = '',
       userTimeZone = this._userTimeZone,
-      loadContentCover = true,
-      gotOptions
+      loadContentCover = true
     }: {
       type?: notion.CollectionViewType
       limit?: number
@@ -323,7 +306,6 @@ export class NotionAPI {
       userTimeZone?: string
       userLocale?: string
       loadContentCover?: boolean
-      gotOptions?: OptionsOfJSONResponseBody
     } = {}
   ) {
     const type = collectionView?.type
@@ -483,28 +465,20 @@ export class NotionAPI {
           id: collectionViewId
         },
         loader
-      },
-      gotOptions
+      }
     })
   }
 
-  public async getUsers(
-    userIds: string[],
-    gotOptions?: OptionsOfJSONResponseBody
-  ) {
+  public async getUsers(userIds: string[]) {
     return this.fetch<notion.RecordValues<notion.User>>({
       endpoint: 'getRecordValues',
       body: {
         requests: userIds.map((id) => ({ id, table: 'notion_user' }))
-      },
-      gotOptions
+      }
     })
   }
 
-  public async getBlocks(
-    blockIds: string[],
-    gotOptions?: OptionsOfJSONResponseBody
-  ) {
+  public async getBlocks(blockIds: string[]) {
     return this.fetch<notion.PageChunk>({
       endpoint: 'syncRecordValues',
       body: {
@@ -514,28 +488,20 @@ export class NotionAPI {
           id: blockId,
           version: -1
         }))
-      },
-      gotOptions
+      }
     })
   }
 
-  public async getSignedFileUrls(
-    urls: types.SignedUrlRequest[],
-    gotOptions?: OptionsOfJSONResponseBody
-  ) {
+  public async getSignedFileUrls(urls: types.SignedUrlRequest[]) {
     return this.fetch<types.SignedUrlResponse>({
       endpoint: 'getSignedFileUrls',
       body: {
         urls
-      },
-      gotOptions
+      }
     })
   }
 
-  public async search(
-    params: notion.SearchParams,
-    gotOptions?: OptionsOfJSONResponseBody
-  ) {
+  public async search(params: notion.SearchParams) {
     const body = {
       type: 'BlocksInAncestor',
       source: 'quick_find_public',
@@ -559,25 +525,21 @@ export class NotionAPI {
 
     return this.fetch<notion.SearchResults>({
       endpoint: 'search',
-      body,
-      gotOptions
+      body
     })
   }
 
   public async fetch<T>({
     endpoint,
     body,
-    gotOptions,
     headers: clientHeaders
   }: {
     endpoint: string
     body: object
-    gotOptions?: OptionsOfJSONResponseBody
     headers?: any
   }): Promise<T> {
     const headers: any = {
       ...clientHeaders,
-      ...gotOptions?.headers,
       'Content-Type': 'application/json'
     }
 
@@ -590,10 +552,8 @@ export class NotionAPI {
     }
 
     const url = `${this._apiBaseUrl}/${endpoint}`
-
-    return got
+    return ky
       .post(url, {
-        ...gotOptions,
         json: body,
         headers
       })
