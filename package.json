@@ -9,8 +9,7 @@
     "node": ">=12"
   },
   "workspaces": [
-    "packages/*",
-    "examples/*"
+    "packages/notion-client"
   ],
   "scripts": {
     "build": "run-s build:*",
