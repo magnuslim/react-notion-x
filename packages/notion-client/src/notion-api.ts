@@ -6,7 +6,7 @@ import {
   getPageContentBlockIds,
   uuidToId,
   getBlockCollectionId
-} from './notion-utils'
+} from 'notion-utils'
 import * as notion from 'notion-types'
 
 import * as types from './types'
