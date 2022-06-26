@@ -1,4 +1,5 @@
-import ky from 'ky-universal'
+import kyUniversal from 'ky-universal'
+import kyOriginal from 'ky'
 import pMap from 'p-map-browser'
 
 import {
@@ -10,6 +11,8 @@ import {
 import * as notion from 'notion-types'
 
 import * as types from './types'
+
+const ky = typeof window === 'undefined' ? kyOriginal : kyUniversal
 
 /**
  * Main Notion API client.
@@ -567,14 +570,5 @@ export class NotionAPI {
         headers
       })
       .json()
-
-    // return fetch(url, {
-    //   method: 'post',
-    //   body: JSON.stringify(body),
-    //   headers
-    // }).then((res) => {
-    //   console.log(endpoint, res)
-    //   return res.json()
-    // })
   }
 }

@@ -15,9 +15,9 @@ export interface SignedUrlResponse {
 }
 
 interface Backlink {
-  block_id: notion.ID
+  block_id: notion.ID // The id of the mentioned block. Usually a page, or a synced block
   mentioned_from: {
-    block_id: notion.ID
+    block_id: notion.ID // The block that mentioned the above block
     pointer: {
       id: notion.ID
       spaceId: notion.ID
