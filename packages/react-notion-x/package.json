@@ -1,6 +1,7 @@
 {
   "name": "react-notion-x",
   "version": "6.12.13",
+  "private": true,
   "type": "module",
   "description": "Fast and accurate React renderer for Notion.",
   "repository": "NotionX/react-notion-x",
