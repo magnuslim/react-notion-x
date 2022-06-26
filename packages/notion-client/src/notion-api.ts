@@ -501,6 +501,15 @@ export class NotionAPI {
     })
   }
 
+  public async getBacklinksForBlock(blockId: string) {
+    return this.fetch<types.GetBacklinksForBlockResponse>({
+      endpoint: 'getBacklinksForBlock',
+      body: {
+        blockId
+      }
+    })
+  }
+
   public async search(params: notion.SearchParams) {
     const body = {
       type: 'BlocksInAncestor',

@@ -13,9 +13,6 @@
     },
     {
       "path": "./packages/notion-client/tsconfig.json"
-    },
-    {
-      "path": "./packages/react-notion-x/tsconfig.json"
     }
   ]
 }

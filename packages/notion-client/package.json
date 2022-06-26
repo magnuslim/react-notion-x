@@ -28,7 +28,7 @@
     "mem": "^9.0.2",
     "normalize-url": "^7.0.3",
     "notion-types": "^6.12.6",
-    "notion-utils": "^6.12.13",
+    "notion-utils": "^6.12.9",
     "p-map-browser": "^1.2.0",
     "p-queue": "6.6.2"
   },
