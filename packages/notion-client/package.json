@@ -42,5 +42,8 @@
       "--no-warnings",
       "--experimental-specifier-resolution=node"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
