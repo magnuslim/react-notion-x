@@ -22,9 +22,8 @@
     "test": "ava"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "is-url-superb": "^6.1.0",
-    "ky": "^0.30.0",
-    "ky-universal": "^0.10.1",
     "mem": "^9.0.2",
     "normalize-url": "^7.0.3",
     "notion-types": "^6.12.6",

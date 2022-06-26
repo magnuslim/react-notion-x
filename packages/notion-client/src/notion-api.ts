@@ -1,5 +1,4 @@
-import kyUniversal from 'ky-universal'
-import kyOriginal from 'ky'
+import axios from 'axios'
 import pMap from 'p-map-browser'
 
 import {
@@ -11,8 +10,6 @@ import {
 import * as notion from 'notion-types'
 
 import * as types from './types'
-
-const ky = typeof window === 'undefined' ? kyOriginal : kyUniversal
 
 /**
  * Main Notion API client.
@@ -564,11 +561,15 @@ export class NotionAPI {
     }
 
     const url = `${this._apiBaseUrl}/${endpoint}`
-    return ky
-      .post(url, {
-        json: body,
-        headers
-      })
-      .json()
+    const response = await axios.post(url, body, {
+      headers
+    })
+    return response.data
+    // return ky
+    //   .post(url, {
+    //     json: body,
+    //     headers
+    //   })
+    //   .json()
   }
 }
